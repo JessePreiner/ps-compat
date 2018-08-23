@@ -7,15 +7,19 @@ import { Provider, connect } from 'react-redux';
 import axios from 'axios';
 import axiosMiddleware from 'redux-axios-middleware';
 
-import reducer from './eventReducer';
+import eventReducer from './eventReducer';
+import announcementReducer from './announcementReducer';
 import EventList from './EventList';
+import AnnouncementList from './AnnouncementList';
 
-const client = axios.create({
-  baseURL: 'https://soccer.playsask.com',
+// https://playsask.com/wp-json/wp/v2/posts
+const rootClient = axios.create({
   responseType: 'json'
 });
 
-const store = createStore(reducer, applyMiddleware(axiosMiddleware(client)));
+
+const rootStore = createStore(announcementReducer, applyMiddleware(axiosMiddleware(rootClient)));
+const store = createStore(eventReducer, applyMiddleware(axiosMiddleware(rootClient)));
 
 class Matches extends Component {
   render() {
@@ -28,6 +32,8 @@ class Matches extends Component {
     );
   }
 }
+
+
 
 export default class App extends React.Component {
   render() {
@@ -43,11 +49,13 @@ class Announcements extends React.Component {
   }
   render() {
     return (
-      <View style={styles.container}>
-        <Text>
-        These are the announcements
-        </Text>
-      </View>
+      <Provider store={rootStore}>
+        <View style={styles.container}>
+        <Text syle={styles.header}>Announcements</Text>
+
+          <AnnouncementList />
+        </View>
+      </Provider>
     );
   }
 }

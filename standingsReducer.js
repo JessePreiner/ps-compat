@@ -1,6 +1,6 @@
-export const GET_STANDINGS = 'my-awesome-app/repos/LOAD';
-export const GET_STANDINGS_SUCCESS = 'my-awesome-app/repos/LOAD_SUCCESS';
-export const GET_STANDINGS_FAIL = 'my-awesome-app/repos/LOAD_FAIL';
+export const GET_STANDINGS = 'psapp/standings/LOAD';
+export const GET_STANDINGS_SUCCESS = 'psapp/standings/LOAD_SUCCESS';
+export const GET_STANDINGS_FAIL = 'psapp/standings/LOAD_FAIL';
 
 export default function reducer(state = { standings: [] }, action) {
   switch (action.type) {
