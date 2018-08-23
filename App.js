@@ -1,58 +1,103 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator, createStackNavigator, createDrawerNavigator } from 'react-navigation';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+import { createStore, applyMiddleware } from 'redux';
+import { Provider, connect } from 'react-redux';
+import axios from 'axios';
+import axiosMiddleware from 'redux-axios-middleware';
+
+import reducer from './eventReducer';
+import EventList from './EventList';
+
+const client = axios.create({
+  baseURL: 'https://soccer.playsask.com',
+  responseType: 'json'
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+const store = createStore(reducer, applyMiddleware(axiosMiddleware(client)));
+
+class Matches extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <View style={styles.container}>
+          <EventList />
+        </View>
+      </Provider>
+    );
+  }
+}
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <Navigation />
+    );
+  }
+}
+
+class Announcements extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
+        <Text>
+        These are the announcements
         </Text>
       </View>
     );
   }
 }
 
+class Standings extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>
+        These are the standings
+        </Text>
+      </View>
+    );
+  }
+}
+
+
+class Schedule extends React.Component {
+  static navigationOptions = {
+  };
+  render () {
+    return (
+    <View style={styles.container}>
+      <Text syle={styles.header}>Matches</Text>
+      <Matches></Matches>
+      {/* <Text>Huh</Text><Text onPress={() => props.navigation.navigate('Soccer')}>Go to Soccer</Text> */}
+    </View>
+    )
+    }
+} 
+
+const Navigation = createBottomTabNavigator({
+  Announcements: () => (<Announcements></Announcements>),
+  Schedule: () => (<Schedule></Schedule>),
+  Standings: () => (<Standings></Standings>)
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: 'center',
+    marginTop: 50
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  header: {
+    fontSize:16,
+    fontWeight: 'bold'
+  }
 });
